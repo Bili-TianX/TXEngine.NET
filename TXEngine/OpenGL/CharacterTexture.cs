@@ -27,7 +27,10 @@ internal class CharacterTexture : BaseTexture
 
     public override void LoadFromMemory(byte[] data, int width, int height)
     {
-        if (data == null) throw new ArgumentNullException(nameof(data));
+        if (data == null)
+        {
+            throw new ArgumentNullException(nameof(data));
+        }
 
         Width = width;
         Height = height;

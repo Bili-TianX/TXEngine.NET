@@ -128,9 +128,13 @@ public class Window : IDisposable
         {
             _audioEnabled = value;
             if (_audioEnabled)
+            {
                 ALUT.Init();
+            }
             else
+            {
                 ALUT.Exit();
+            }
         }
     }
 
@@ -161,32 +165,32 @@ public class Window : IDisposable
         {
             _shader.Bind();
 
-            var x = value.X;
-            var y = value.Y;
-            var width = value.Z;
-            var height = value.W;
+            float x = value.X;
+            float y = value.Y;
+            float width = value.Z;
+            float height = value.W;
 
             // 缩放
-            var mat1 = new Matrix3(
+            Matrix3 mat1 = new(
                 2.0f / width, 0, 0,
                 0, -2.0f / height, 0,
                 0, 0, 1
             );
             // 平移
-            var mat2 = new Matrix3(
+            Matrix3 mat2 = new(
                 1, 0, 0,
                 0, 1, 0,
                 -1, 1, 1
             );
             // 平移
-            var pos = mat1 * new Vector3(x, y, 1);
-            var mat3 = new Matrix3(
+            Vector3 pos = mat1 * new Vector3(x, y, 1);
+            Matrix3 mat3 = new(
                 1, 0, 0,
                 0, 1, 0,
                 -pos.X, -pos.Y, 1
             );
 
-            var mat = mat1 * mat3 * mat2;
+            Matrix3 mat = mat1 * mat3 * mat2;
 
             GL.UniformMatrix3(_shader.GetUniform("windowMatrix"), false, ref mat);
 
@@ -214,8 +218,8 @@ public class Window : IDisposable
             OnWindowResized?.Invoke(_w, _h);
         };
 
-        GLFW.SetWindowCloseCallback(_handle, _windowCloseCallback);
-        GLFW.SetWindowSizeCallback(_handle, _windowSizeCallback);
+        _ = GLFW.SetWindowCloseCallback(_handle, _windowCloseCallback);
+        _ = GLFW.SetWindowSizeCallback(_handle, _windowSizeCallback);
     }
 
 
@@ -231,7 +235,11 @@ public class Window : IDisposable
     /// </summary>
     public void PollEvents()
     {
-        if (!Open) return;
+        if (!Open)
+        {
+            return;
+        }
+
         GLFW.PollEvents();
     }
 
@@ -289,7 +297,11 @@ public class Window : IDisposable
     /// </summary>
     public unsafe void Activate()
     {
-        if (!Open) return;
+        if (!Open)
+        {
+            return;
+        }
+
         GLFW.MakeContextCurrent(_handle);
     }
 
@@ -299,7 +311,7 @@ public class Window : IDisposable
     /// <param name="filename">图标文件名</param>
     public unsafe void SetIcon(string filename)
     {
-        var (pixels, width, height) = ImageUtil.LoadFromFile(filename);
+        (byte[] pixels, int width, int height) = ImageUtil.LoadFromFile(filename);
 
         fixed (byte* ptr = pixels)
         {

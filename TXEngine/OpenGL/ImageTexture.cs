@@ -14,7 +14,7 @@ public class ImageTexture : BaseTexture, IFileLoader
     /// <param name="filename">文件名</param>
     public void LoadFromFile(string filename)
     {
-        var (pixels, width, height) = ImageUtil.LoadFromFile(filename);
+        (byte[] pixels, int width, int height) = ImageUtil.LoadFromFile(filename);
         LoadFromMemory(pixels, width, height);
     }
 

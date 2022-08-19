@@ -25,8 +25,8 @@ public class Shader : IBind, IDisposable
         _program = GL.CreateProgram();
         _uniformLocationCache = new Dictionary<string, int>();
 
-        var vertexShader = CompileShader(ShaderType.VertexShader, vertexShaderSource);
-        var fragmentShader = CompileShader(ShaderType.FragmentShader, fragmentShaderSource);
+        int vertexShader = CompileShader(ShaderType.VertexShader, vertexShaderSource);
+        int fragmentShader = CompileShader(ShaderType.FragmentShader, fragmentShaderSource);
 
         GL.AttachShader(_program, vertexShader);
         GL.AttachShader(_program, fragmentShader);
@@ -109,16 +109,19 @@ void main() {
     /// <exception cref="Exception">无法编译着色器</exception>
     private static int CompileShader(ShaderType type, string source)
     {
-        var shader = GL.CreateShader(type);
+        int shader = GL.CreateShader(type);
 
         GL.ShaderSource(shader, source);
         GL.CompileShader(shader);
 
-        GL.GetShader(shader, ShaderParameter.CompileStatus, out var result);
-        if (result != (int)Boolean.False) return shader;
+        GL.GetShader(shader, ShaderParameter.CompileStatus, out int result);
+        if (result != (int)Boolean.False)
+        {
+            return shader;
+        }
 
-        GL.GetShader(shader, ShaderParameter.InfoLogLength, out var length);
-        GL.GetShaderInfoLog(shader, length, out length, out var message);
+        GL.GetShader(shader, ShaderParameter.InfoLogLength, out int length);
+        GL.GetShaderInfoLog(shader, length, out _, out string? message);
         throw new Exception(message);
     }
 
@@ -129,8 +132,8 @@ void main() {
     /// <returns>Uniform的ID</returns>
     public int GetUniform(string name)
     {
-        if (_uniformLocationCache.ContainsKey(name)) return _uniformLocationCache[name];
-
-        return _uniformLocationCache[name] = GL.GetUniformLocation(_program, name);
+        return _uniformLocationCache.ContainsKey(name)
+            ? _uniformLocationCache[name]
+            : (_uniformLocationCache[name] = GL.GetUniformLocation(_program, name));
     }
 }

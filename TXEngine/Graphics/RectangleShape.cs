@@ -57,7 +57,7 @@ public class RectangleShape : Shape
 
     protected override void UpdateVertices()
     {
-        var vertices = Texture == null
+        Vertex[] vertices = Texture == null
             ? new[]
             {
                 new Vertex(_x, _y, _color),
@@ -73,7 +73,7 @@ public class RectangleShape : Shape
                 new Vertex(_x + _width, _y, _color, 1, 0)
             };
 
-        var indices = new[]
+        int[] indices = new[]
         {
             0, 1, 2,
             0, 3, 2

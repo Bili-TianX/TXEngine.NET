@@ -6,9 +6,15 @@ internal static class ALUT
 
     public static unsafe void Init()
     {
-        if (Initialized) return;
+        if (Initialized)
+        {
+            return;
+        }
 
-        if (alutInit(null, null) == 0) throw new Exception("Unable to Init GLUT");
+        if (alutInit(null, null) == 0)
+        {
+            throw new Exception("Unable to Init GLUT");
+        }
 
         AL.Listener(ALListener3f.Position, 0, 0, 0);
         AL.Listener(ALListener3f.Velocity, 0, 0, 0);
@@ -19,9 +25,15 @@ internal static class ALUT
 
     public static void Exit()
     {
-        if (!Initialized) return;
+        if (!Initialized)
+        {
+            return;
+        }
 
-        if (alutExit() == 0) throw new Exception("Unable to Exit GLUT");
+        if (alutExit() == 0)
+        {
+            throw new Exception("Unable to Exit GLUT");
+        }
 
         Initialized = false;
     }

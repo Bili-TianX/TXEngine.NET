@@ -24,7 +24,10 @@ public class Sound : IDisposable, IFileLoader
     /// <exception cref="Exception">如果ALUT未初始化</exception>
     public Sound()
     {
-        if (!Initialized) throw new Exception("Please Enable Audio first!");
+        if (!Initialized)
+        {
+            throw new Exception("Please Enable Audio first!");
+        }
 
         _buffer = AL.GenBuffer();
         _source = AL.GenSource();
@@ -36,7 +39,10 @@ public class Sound : IDisposable, IFileLoader
     /// <exception cref="Exception">如果ALUT未初始化</exception>
     public void Dispose()
     {
-        if (!Initialized) throw new Exception("Please Enable Audio first!");
+        if (!Initialized)
+        {
+            throw new Exception("Please Enable Audio first!");
+        }
 
         AL.DeleteSource(_source);
         AL.DeleteBuffer(_buffer);
@@ -50,13 +56,22 @@ public class Sound : IDisposable, IFileLoader
     /// <exception cref="IOException">文件不存在</exception>
     public unsafe void LoadFromFile(string filename)
     {
-        if (!Initialized) throw new Exception("Please Enable Audio first!");
+        if (!Initialized)
+        {
+            throw new Exception("Please Enable Audio first!");
+        }
 
-        if (!File.Exists(filename)) throw new IOException("Audio File does not exists");
+        if (!File.Exists(filename))
+        {
+            throw new IOException("Audio File does not exists");
+        }
 
-        var data = alutLoadMemoryFromFile(filename, out var format, out var size, out var frequency);
+        void* data = alutLoadMemoryFromFile(filename, out int format, out int size, out float frequency);
 
-        if (data == null) throw new Exception("Unable to load Audio File");
+        if (data == null)
+        {
+            throw new Exception("Unable to load Audio File");
+        }
 
         AL.BufferData(_buffer, (ALFormat)format, data, size, (int)frequency);
 
@@ -72,7 +87,10 @@ public class Sound : IDisposable, IFileLoader
     /// <exception cref="Exception">如果ALUT未初始化</exception>
     public void Play()
     {
-        if (!Initialized) throw new Exception("Please Enable Audio first!");
+        if (!Initialized)
+        {
+            throw new Exception("Please Enable Audio first!");
+        }
 
         AL.SourcePlay(_source);
     }

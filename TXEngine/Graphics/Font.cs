@@ -28,7 +28,10 @@ public class Font : IDisposable
         set
         {
             _filename = value;
-            if (!File.Exists(Filename)) throw new IOException();
+            if (!File.Exists(Filename))
+            {
+                throw new IOException();
+            }
         }
     }
 
@@ -37,7 +40,10 @@ public class Font : IDisposable
 
     public void Dispose()
     {
-        foreach (var texture in _characterTextureMap.Values) texture.Dispose();
+        foreach (CharacterTexture texture in _characterTextureMap.Values)
+        {
+            texture.Dispose();
+        }
     }
 
     /// <summary>
@@ -53,11 +59,11 @@ public class Font : IDisposable
         fixed (byte* ptr = File.ReadAllBytes(Filename))
         {
             info = new stbtt_fontinfo();
-            stbtt_InitFont(info, ptr, stbtt_GetFontOffsetForIndex(ptr, 0));
+            _ = stbtt_InitFont(info, ptr, stbtt_GetFontOffsetForIndex(ptr, 0));
         }
 
         Dictionary<char, CharacterTexture> textures = new(); // 纹理表
-        var scale = stbtt_ScaleForPixelHeight(info, size); // 比例
+        float scale = stbtt_ScaleForPixelHeight(info, size); // 比例
 
         // 统计需要加载的字符纹理
         HashSet<char> chars = new(source);
@@ -73,12 +79,13 @@ public class Font : IDisposable
         }
 
         // 移除空白字符
-        chars.Remove(' ');
-        chars.Remove('\t');
-        chars.Remove('\n');
+        _ = chars.Remove(' ');
+        _ = chars.Remove('\t');
+        _ = chars.Remove('\n');
 
         int[] w = new int[1], h = new int[1], xoff = new int[1], yoff = new int[1];
-        foreach (var c in chars)
+        foreach (char c in chars)
+        {
             if (_characterTextureMap.ContainsKey((size, c)))
             {
                 textures[c] = _characterTextureMap[(size, c)];
@@ -86,12 +93,12 @@ public class Font : IDisposable
             else
             {
                 // 纹理数据
-                var pixels = new byte[size * size];
+                byte[] pixels = new byte[size * size];
 
                 // 加载数据
                 fixed (int* wPtr = w, hPtr = h, xPtr = xoff, yPtr = yoff)
                 {
-                    var tmp = stbtt_GetCodepointBitmap(info, 0, scale, c,
+                    byte* tmp = stbtt_GetCodepointBitmap(info, 0, scale, c,
                         wPtr, hPtr, xPtr, yPtr);
 
                     Marshal.Copy(new IntPtr(tmp), pixels, 0, pixels.Length);
@@ -99,7 +106,7 @@ public class Font : IDisposable
                 }
 
                 // 创建纹理
-                var texture = new CharacterTexture
+                CharacterTexture texture = new()
                 {
                     Offset = new Vector2(xoff[0], yoff[0]),
                     Advance = w[0] + xoff[0]
@@ -107,6 +114,7 @@ public class Font : IDisposable
                 texture.LoadFromMemory(pixels, w[0], h[0]);
                 _characterTextureMap[(size, c)] = textures[c] = texture;
             }
+        }
 
         GC.Collect();
         return textures;

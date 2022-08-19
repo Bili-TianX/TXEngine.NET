@@ -58,15 +58,15 @@ public class CircleShape : Shape
 
     protected override void UpdateVertices()
     {
-        var vertices = new Vertex[PointCount + 1];
+        Vertex[] vertices = new Vertex[PointCount + 1];
 
-        for (var i = 0; i < PointCount; i++)
+        for (int i = 0; i < PointCount; i++)
         {
-            var angle = i * 2.0 / PointCount * Math.PI;
-            var c = Math.Cos(angle);
-            var s = Math.Sin(angle);
-            var x = c * _radius;
-            var y = s * _radius;
+            double angle = i * 2.0 / PointCount * Math.PI;
+            double c = Math.Cos(angle);
+            double s = Math.Sin(angle);
+            double x = c * _radius;
+            double y = s * _radius;
 
             vertices[i] = Texture == null
                 ? new Vertex(
@@ -78,8 +78,8 @@ public class CircleShape : Shape
                     (float)(_x + x),
                     (float)(_y + y),
                     _color,
-                    (float)(c / 2 + 0.5),
-                    (float)(-s / 2 + 0.5)
+                    (float)((c / 2) + 0.5),
+                    (float)((-s / 2) + 0.5)
                 );
         }
 
@@ -87,9 +87,12 @@ public class CircleShape : Shape
             ? new Vertex(_x, _y, _color)
             : new Vertex(_x, _y, _color, 0.5f, 0.5f);
 
-        var indies = new int[vertices.Length + 1];
+        int[] indies = new int[vertices.Length + 1];
         indies[0] = PointCount;
-        for (var i = 1; i < vertices.Length; i++) indies[i] = i - 1;
+        for (int i = 1; i < vertices.Length; i++)
+        {
+            indies[i] = i - 1;
+        }
 
         indies[^1] = 0;
 

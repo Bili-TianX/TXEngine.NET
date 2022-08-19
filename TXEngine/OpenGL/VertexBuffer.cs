@@ -52,14 +52,14 @@ public class VertexBuffer : BaseBuffer
     /// <param name="vertices">顶点数组</param>
     public void AttachData(Vertex[] vertices)
     {
-        var data = new float[8 * vertices.Length];
-        var i = 0;
+        float[] data = new float[8 * vertices.Length];
+        int i = 0;
 
-        foreach (var vertex in vertices)
+        foreach (Vertex vertex in vertices)
         {
-            var vertexPosition = vertex.Position;
-            var (r, g, b, a) = vertex.Color.Normalize();
-            var vertexTexturePosition = vertex.TexturePosition;
+            Vector2 vertexPosition = vertex.Position;
+            (float r, float g, float b, float a) = vertex.Color.Normalize();
+            Vector2 vertexTexturePosition = vertex.TexturePosition;
 
             data[i++] = vertexPosition.X;
             data[i++] = vertexPosition.Y;

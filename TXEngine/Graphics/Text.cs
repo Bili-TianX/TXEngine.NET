@@ -125,8 +125,8 @@ public class Text : IDrawable, IDisposable
     /// </summary>
     private void UpdatePosition()
     {
-        var x = _x;
-        var y = _y;
+        float x = _x;
+        float y = _y;
 
         for (int i = 0, index = 0; i < _source.Length; i++)
         {
@@ -144,9 +144,9 @@ public class Text : IDrawable, IDisposable
                     continue;
             }
 
-            var shape = _shapes[index++];
-            var texture = (CharacterTexture)shape.Texture!;
-            var offset = texture.Offset;
+            RectangleShape shape = _shapes[index++];
+            CharacterTexture texture = (CharacterTexture)shape.Texture!;
+            Vector2 offset = texture.Offset;
 
             shape.Position = new Vector2(x + offset.X, y + offset.Y);
             x += texture.Advance;
@@ -166,11 +166,11 @@ public class Text : IDrawable, IDisposable
         _shapes.ForEach(shape => shape.Dispose());
         _shapes.Clear();
 
-        var x = _x;
-        var y = _y;
-        var charMap = _font.GetTextures(_source, _size);
+        float x = _x;
+        float y = _y;
+        Dictionary<char, CharacterTexture> charMap = _font.GetTextures(_source, _size);
 
-        foreach (var c in _source)
+        foreach (char c in _source)
         {
             // 空白字符
             switch (c)
@@ -187,8 +187,8 @@ public class Text : IDrawable, IDisposable
                     continue;
             }
 
-            var texture = charMap[c];
-            var offset = texture.Offset;
+            CharacterTexture texture = charMap[c];
+            Vector2 offset = texture.Offset;
 
             _shapes.Add(new RectangleShape(x + offset.X, y + offset.Y, texture.Width, texture.Height, _color, texture));
             x += texture.Advance;

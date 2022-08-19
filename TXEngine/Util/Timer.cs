@@ -38,8 +38,8 @@ public class Timer
     /// <returns>经过的时间</returns>
     public double Restart()
     {
-        var now = GLFW.GetTime();
-        var result = now - _start;
+        double now = GLFW.GetTime();
+        double result = now - _start;
         _start = now;
         return result;
     }

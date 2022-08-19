@@ -13,9 +13,12 @@ internal static class OpenGLUtil
     /// </summary>
     internal static void InitGLFW()
     {
-        if (_glfwInitialized) return;
+        if (_glfwInitialized)
+        {
+            return;
+        }
 
-        GLFW.Init();
+        _ = GLFW.Init();
 
         _glfwInitialized = true;
         AppDomain.CurrentDomain.ProcessExit += (_, _) => GLFW.Terminate();
@@ -27,9 +30,15 @@ internal static class OpenGLUtil
     /// <exception cref="Exception">如果GLFW尚未初始化</exception>
     internal static void InitGL()
     {
-        if (_glInitialized) return;
+        if (_glInitialized)
+        {
+            return;
+        }
 
-        if (!_glfwInitialized) throw new Exception("Please Init GLFW first!");
+        if (!_glfwInitialized)
+        {
+            throw new Exception("Please Init GLFW first!");
+        }
 
         GL.LoadBindings(new GLFWBindingsContext());
 
