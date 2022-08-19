@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="OpenTK" Version="4.7.4"/>
+        <PackageReference Include="SixLabors.ImageSharp" Version="2.1.3"/>
+        <PackageReference Include="StbTrueTypeSharp" Version="1.26.10"/>
+        <Using Include="OpenTK.Windowing.GraphicsLibraryFramework.Window" Alias="GLFWWindowHandle"/>
+        <Using Include="OpenTK.Windowing.GraphicsLibraryFramework"/>
+        <Using Include="OpenTK.Audio.OpenAL"/>
+        <Using Include="OpenTK.Graphics.OpenGL4"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="1.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="a.ttf">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="alut.dll">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="button_click.wav">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="a.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="consola.ttf">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="simsun.ttc">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="wall.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="font.ttc">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="freetype6.lib">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+</Project>
