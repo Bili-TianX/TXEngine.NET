@@ -18,7 +18,7 @@
         <Using Include="OpenTK.Graphics.OpenGL4" />
         <Using Include="OpenTK.Mathematics" />
         <Using Include="System.Runtime.InteropServices" />
-		<Using Static="true" Include="StbTrueTypeSharp.StbTrueType"/>
+		<Using Static="true" Include="StbTrueTypeSharp.StbTrueType" />
     </ItemGroup>
 
     <ItemGroup>
@@ -27,6 +27,9 @@
         </None>
         <None Update="a.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="alut.dll">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="consola.ttf">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
