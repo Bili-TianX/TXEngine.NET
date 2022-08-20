@@ -10,6 +10,11 @@ public class IndexBuffer : BaseBuffer
         Buffer = GL.GenBuffer();
     }
 
+    ~IndexBuffer()
+    {
+        Dispose();
+    }
+
     /// <summary>
     ///     顶点个数（需调用过AttachData方法）
     /// </summary>

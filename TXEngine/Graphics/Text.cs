@@ -113,7 +113,7 @@ public class Text : IDrawable, IDisposable
         _shapes.ForEach(shape => shape.Dispose());
     }
 
-    public void Draw(Shader shader)
+    internal void Draw(Shader shader)
     {
         GL.Uniform1(shader.GetUniform("isText"), 1);
         _shapes.ForEach(shape => shape.Draw(shader));
@@ -195,5 +195,10 @@ public class Text : IDrawable, IDisposable
         }
 
         GC.Collect();
+    }
+
+    void IDrawable.Draw(Shader shader)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -8,7 +8,6 @@ namespace TXEngine.Graphics;
 /// </summary>
 public abstract class Shape : TextureTarget, IDisposable
 {
-    protected readonly IndexBuffer IndexBuffer;
     protected readonly VertexBuffer VertexBuffer;
 
     /// <summary>
@@ -29,7 +28,6 @@ public abstract class Shape : TextureTarget, IDisposable
         _texture = texture;
 
         VertexBuffer = new VertexBuffer();
-        IndexBuffer = new IndexBuffer();
     }
 
     /// <summary>
@@ -66,7 +64,6 @@ public abstract class Shape : TextureTarget, IDisposable
     /// </summary>
     public void Dispose()
     {
-        IndexBuffer.Dispose();
         VertexBuffer.Dispose();
     }
 

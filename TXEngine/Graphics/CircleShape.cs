@@ -13,6 +13,8 @@ public class CircleShape : Shape
     ///     由于OpenGL默认不提供圆形渲染，只能通过多个三角形叠加而成
     /// </summary>
     private const int PointCount = 48;
+    private static IndexBuffer? _indexBuffer;
+
 
     /// <summary>
     ///     半径
@@ -27,6 +29,21 @@ public class CircleShape : Shape
         : base(x, y, color, texture)
     {
         _radius = radius;
+
+        if (_indexBuffer == null)
+        {
+            _indexBuffer = new IndexBuffer();
+            int[] indices = new int[PointCount + 2];
+            indices[0] = PointCount;
+            for (int i = 1; i < PointCount + 1; i++)
+            {
+                indices[i] = i - 1;
+            }
+
+            indices[^1] = 0;
+            _indexBuffer.AttachData(indices);
+        }
+
         UpdateVertices();
     }
 
@@ -46,14 +63,14 @@ public class CircleShape : Shape
     public override void Draw(Shader shader)
     {
         VertexBuffer.SetupDraw();
-        IndexBuffer.Bind();
+        _indexBuffer?.Bind();
         Texture?.Bind();
 
-        GL.DrawElements(PrimitiveType.TriangleFan, IndexBuffer.Count, DrawElementsType.UnsignedInt, 0);
+        GL.DrawElements(PrimitiveType.TriangleFan, (int)_indexBuffer?.Count!, DrawElementsType.UnsignedInt, 0);
 
         Texture?.UnBind();
         VertexBuffer.FinishDraw();
-        IndexBuffer.UnBind();
+        _indexBuffer?.UnBind();
     }
 
     protected override void UpdateVertices()
@@ -87,16 +104,7 @@ public class CircleShape : Shape
             ? new Vertex(_x, _y, _color)
             : new Vertex(_x, _y, _color, 0.5f, 0.5f);
 
-        int[] indies = new int[vertices.Length + 1];
-        indies[0] = PointCount;
-        for (int i = 1; i < vertices.Length; i++)
-        {
-            indies[i] = i - 1;
-        }
-
-        indies[^1] = 0;
 
         VertexBuffer.AttachData(vertices);
-        IndexBuffer.AttachData(indies);
     }
 }

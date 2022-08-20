@@ -12,6 +12,7 @@ public class RectangleShape : Shape
     ///     大小（宽、高）
     /// </summary>
     private float _width, _height;
+    private static IndexBuffer? _indexBuffer;
 
     public RectangleShape(float x, float y, float width, float height)
         : this(x, y, width, height, Color.White)
@@ -23,6 +24,16 @@ public class RectangleShape : Shape
     {
         _width = width;
         _height = height;
+        if (_indexBuffer == null)
+        {
+            _indexBuffer = new IndexBuffer();
+            int[] indices = new[]
+            {
+                0, 1, 2,
+                0, 3, 2
+            };
+            _indexBuffer.AttachData(indices);
+        }
 
         UpdateVertices();
     }
@@ -46,13 +57,13 @@ public class RectangleShape : Shape
     {
         Texture?.Bind();
         VertexBuffer.SetupDraw();
-        IndexBuffer.Bind();
+        _indexBuffer?.Bind();
 
-        GL.DrawElements(PrimitiveType.Triangles, IndexBuffer.Count, DrawElementsType.UnsignedInt, 0);
+        GL.DrawElements(PrimitiveType.Triangles, (int)_indexBuffer?.Count!, DrawElementsType.UnsignedInt, 0);
 
         Texture?.UnBind();
         VertexBuffer.FinishDraw();
-        IndexBuffer.UnBind();
+        _indexBuffer?.UnBind();
     }
 
     protected override void UpdateVertices()
@@ -73,13 +84,6 @@ public class RectangleShape : Shape
                 new Vertex(_x + _width, _y, _color, 1, 0)
             };
 
-        int[] indices = new[]
-        {
-            0, 1, 2,
-            0, 3, 2
-        };
-
         VertexBuffer.AttachData(vertices);
-        IndexBuffer.AttachData(indices);
     }
 }

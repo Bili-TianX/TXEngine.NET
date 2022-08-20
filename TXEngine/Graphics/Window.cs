@@ -17,10 +17,22 @@ public class Window : IDisposable
 
     public delegate void WindowResizeHandler(int width, int height);
 
+    public delegate void KeyPressHandler(Keys key);
+
+    public delegate void KeyReleaseHandler(Keys key);
+
+    public delegate void MousePressHandler(MouseButton button);
+
+    public delegate void MouseReleaseHandler(MouseButton button);
+
+    public delegate void MouseMoveHandler(double x, double y);
+
+    public delegate void TextEnterHandler(char unicode);
+
     /// <summary>
     ///     GLFW窗口的指针
     /// </summary>
-    private readonly unsafe GLFWWindowHandle* _handle;
+    internal readonly unsafe GLFWWindowHandle* _handle;
 
     /// <summary>
     ///     着色器
@@ -49,6 +61,10 @@ public class Window : IDisposable
 
     private GLFWCallbacks.WindowCloseCallback _windowCloseCallback;
     private GLFWCallbacks.WindowSizeCallback _windowSizeCallback;
+    private GLFWCallbacks.KeyCallback _keyCallback;
+    private GLFWCallbacks.MouseButtonCallback _mouseButtonCallback;
+    private GLFWCallbacks.CursorPosCallback _cursorPosCallback;
+    private GLFWCallbacks.CharCallback _charCallback;
 
     /// <summary>
     ///     创建窗口
@@ -56,7 +72,9 @@ public class Window : IDisposable
     /// <param name="width">宽度</param>
     /// <param name="height">高度</param>
     /// <param name="title">标题</param>
+#pragma warning disable CS8618 // 在退出构造函数时，不可为 null 的字段必须包含非 null 值。请考虑声明为可以为 null。
     public Window(int width, int height, string title)
+#pragma warning restore CS8618 // 在退出构造函数时，不可为 null 的字段必须包含非 null 值。请考虑声明为可以为 null。
     {
         OpenGLUtil.InitGLFW();
 
@@ -217,9 +235,39 @@ public class Window : IDisposable
             GL.Viewport(0, 0, _w, _h);
             OnWindowResized?.Invoke(_w, _h);
         };
+        _keyCallback = (_, key, _, action, _) =>
+        {
+            switch (action)
+            {
+                case InputAction.Press:
+                    OnKeyPressed?.Invoke(key);
+                    break;
+                case InputAction.Release:
+                    OnKeyReleased?.Invoke(key);
+                    break;
+            }
+        };
+        _mouseButtonCallback = (_, button, action, _) =>
+        {
+            switch (action)
+            {
+                case InputAction.Press:
+                    OnMousePressed?.Invoke(button);
+                    break;
+                case InputAction.Release:
+                    OnMouseReleased?.Invoke(button);
+                    break;
+            }
+        };
+        _cursorPosCallback = (_, x, y) => { OnMouseMoved?.Invoke(x, y); };
+        _charCallback = (_, codepoint) => { OnTextEntered?.Invoke(Convert.ToChar(codepoint)); };
 
         _ = GLFW.SetWindowCloseCallback(_handle, _windowCloseCallback);
         _ = GLFW.SetWindowSizeCallback(_handle, _windowSizeCallback);
+        _ = GLFW.SetKeyCallback(_handle, _keyCallback);
+        _ = GLFW.SetMouseButtonCallback(_handle, _mouseButtonCallback);
+        _ = GLFW.SetCursorPosCallback(_handle, _cursorPosCallback);
+        _ = GLFW.SetCharCallback(_handle, _charCallback);
     }
 
 
@@ -229,6 +277,12 @@ public class Window : IDisposable
     public event WindowCloseHandler? OnWindowClosed;
 
     public event WindowResizeHandler? OnWindowResized;
+    public event KeyPressHandler? OnKeyPressed;
+    public event KeyReleaseHandler? OnKeyReleased;
+    public event MousePressHandler? OnMousePressed;
+    public event MouseReleaseHandler? OnMouseReleased;
+    public event MouseMoveHandler? OnMouseMoved;
+    public event TextEnterHandler? OnTextEntered;
 
     /// <summary>
     ///     处理事件
@@ -275,11 +329,17 @@ public class Window : IDisposable
     /// <param name="drawable">可绘制的对象</param>
     public void Draw(IDrawable drawable)
     {
-        _shader.Bind();
+        lock (_shader)
+        {
+            lock (drawable)
+            {
+                _shader.Bind();
 
-        drawable.Draw(_shader);
+                drawable.Draw(_shader);
 
-        _shader.UnBind();
+                _shader.UnBind();
+            }
+        }
     }
 
     /// <summary>

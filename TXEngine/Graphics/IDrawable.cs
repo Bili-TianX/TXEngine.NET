@@ -11,5 +11,5 @@ public interface IDrawable
     ///     绘制
     /// </summary>
     /// <param name="shader">着色器</param>
-    public void Draw(Shader shader);
+    void Draw(Shader shader);
 }
